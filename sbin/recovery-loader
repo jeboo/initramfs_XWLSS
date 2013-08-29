@@ -12,7 +12,16 @@
 
 /sbin/busybox rm /etc
 /sbin/busybox mkdir /etc
+
+# hack for exfat/fat32 support
 /sbin/busybox cat /res/etc/recovery.fstab > /etc/recovery.fstab
+SDTYPE=`/sbin/busybox blkid | grep -c 'mmcblk1p1'`
+if [ ${SDTYPE} == "1" ];
+then
+	echo "/sdcard		auto		/dev/block/mmcblk1p1" >> /etc/recovery.fstab
+else
+	echo "/sdcard		auto		/dev/block/mmcblk1" >> /etc/recovery.fstab
+fi
 
 start adbd
 stop tvout
